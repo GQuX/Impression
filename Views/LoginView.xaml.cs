@@ -12,19 +12,18 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Impression.View
+namespace Impression.Views
 {
     /// <summary>
     /// Interaction logic for LoginView.xaml
     /// </summary>
     public partial class LoginView : Window
     {
-        public LoginView()
-        {
+        public LoginView() {
             InitializeComponent();
         }
 
-		private void window_title_MouseDown(object sender, MouseButtonEventArgs e) {
+		private void topbar_MouseDown(object sender, MouseButtonEventArgs e) {
             if (e.LeftButton == MouseButtonState.Pressed) { DragMove(); }
         }
 
