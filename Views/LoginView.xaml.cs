@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Impression.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,15 +12,17 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Diagnostics;
 
 namespace Impression.Views
 {
     /// <summary>
     /// Interaction logic for LoginView.xaml
     /// </summary>
-    public partial class LoginView : Window
-    {
-        public LoginView() {
+    public partial class LoginView : Window {
+		private Database _database = new Database();
+
+		public LoginView() {
             InitializeComponent();
         }
 
@@ -29,6 +32,9 @@ namespace Impression.Views
 
 		private void btn_minimize_Click(object sender, RoutedEventArgs e) {
             WindowState = WindowState.Minimized;
+
+            Trace.WriteLine(_database.GetEmotions()[0]);
+            //_database.PrintAllTableNames();
 		}
 
 		private void btn_close_Click(object sender, RoutedEventArgs e) {

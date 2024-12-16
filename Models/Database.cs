@@ -1,25 +1,70 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using System.Data.SQLite;
+using System.Diagnostics;
 
 namespace Impression.Models {
     public class Database {
-        private string connection_string = "Data Source = LocalData.db";
+        private string connection_string = new SQLiteConnectionStringBuilder() {
+			DataSource = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\LocalData.db")
+		}.ConnectionString;
+		
+		public void PrintAllTableNames() {
+			Trace.WriteLine("Database.PrintAllTableNames()");
+			using (var connection = new SQLiteConnection(connection_string)) {
+				connection.Open();
+				var command = new SQLiteCommand("SELECT name FROM sqlite_master WHERE type='table';", connection);
+				using (var reader = command.ExecuteReader()) {
+					Trace.WriteLine("Tables in database:");
+					while (reader.Read()) {
+						Trace.WriteLine(reader.GetString(0));
+					}
+				}
+			}
+		}
+
+		// Get the color of an Emotion. (recursive)
+		private static string GetEmotionColor(SQLiteConnection connection, int? emotion_id) {
+			if (emotion_id == null) { return "#E6E6FA"; }
+			
+			var command = new SQLiteCommand($"SELECT color, parent_id FROM emotions WHERE id = {emotion_id}", connection);
+			using (var reader = command.ExecuteReader()) {
+				if (reader.Read()) {
+					var color = reader.IsDBNull(0) ? null : reader.GetString(0);
+					var parent_id = reader.IsDBNull(1) ? (int?)null : reader.GetInt16(1);
+
+					if (!string.IsNullOrEmpty(color)) {
+						return color;
+					}
+
+					return GetEmotionColor(connection, parent_id);
+				}
+			}
+
+			return "#E6E6FA";
+		}
 
 		// Get a list of all Emotions
 		public List<Emotion> GetEmotions() {
+			Trace.WriteLine("Database.GetEmotions()");
 			var emotions = new List<Emotion>();
 
-			using (var connection = new SqliteConnection(connection_string)) {
+			using (var connection = new SQLiteConnection(connection_string)) {
 				connection.Open();
-				var command = new SqliteCommand("SELECT * FROM emotions", connection);
+				var command = new SQLiteCommand("SELECT * FROM emotions", connection);
 				using (var reader = command.ExecuteReader()) {
 					while (reader.Read()) {
-						emotions.Add(new Emotion {
+						var emotion = new Emotion {
 							Id = reader.GetInt16(0),
 							Name = reader.GetString(1),
 							Level = reader.GetInt16(2),
-							Color = reader.GetString(3),
-							ParentId = reader.GetInt16(4)
-						});
+							Color = reader.IsDBNull(3) ? null : reader.GetString(3),
+							ParentId = reader.IsDBNull(4) ? (int?)null : reader.GetInt16(4),
+						};
+
+						if (string.IsNullOrEmpty(emotion.Color)) {
+							emotion.Color = GetEmotionColor(connection, emotion.ParentId);
+						}
+
+						emotions.Add(emotion);
 					}
 				}
 			}
@@ -31,15 +76,15 @@ namespace Impression.Models {
 		public List<Entry> GetEntries() {
 			var entires = new List<Entry>();
 
-			using (var connection = new SqliteConnection(connection_string)) {
+			using (var connection = new SQLiteConnection(connection_string)) {
 				connection.Open();
-				var command = new SqliteCommand("SELECT * FROM entries", connection);
+				var command = new SQLiteCommand("SELECT * FROM entries", connection);
 				using (var reader = command.ExecuteReader()) {
 					while (reader.Read()) {
 						entires.Add(new Entry {
-							Id = reader.GetInt16(0),
-							EmotionId = reader.GetInt16(1),
-							Timestamp = reader.GetInt32(2)
+							Id = Convert.ToInt16( reader.GetInt64(0) ),
+							EmotionId = Convert.ToInt16( reader.GetInt64(1) ),
+							Timestamp = Convert.ToInt32( reader.GetInt64(2) )
 						});
 					}
 				}
@@ -50,9 +95,9 @@ namespace Impression.Models {
 
 		// Insert an Entry
 		public void AddEntry(Entry entry) {
-			using (var connection = new SqliteConnection(connection_string)) {
+			using (var connection = new SQLiteConnection(connection_string)) {
 				connection.Open();
-				var command = new SqliteCommand("INSERT INTO entries (id, emotion_id, timestamp)" +
+				var command = new SQLiteCommand("INSERT INTO entries (id, emotion_id, timestamp)" +
 					"VALUES (@Id, @EmotionId, @Timestamp)", connection);
 				command.Parameters.AddWithValue("@Id", entry.Id);
 				command.Parameters.AddWithValue("@EmotionId", entry.EmotionId);
