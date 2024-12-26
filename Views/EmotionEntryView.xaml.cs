@@ -16,13 +16,13 @@ using System.Diagnostics;
 
 namespace Impression.Views
 {
-    /// <summary>
-    /// Interaction logic for LoginView.xaml
-    /// </summary>
-    public partial class LoginView : Window {
+	/// <summary>
+	/// Interaction logic for EmotionEntryView.xaml
+	/// </summary>
+	public partial class EmotionEntryView : Window {
 		private Database _database = new Database();
 
-		public LoginView() {
+		public EmotionEntryView() {
             InitializeComponent();
         }
 
