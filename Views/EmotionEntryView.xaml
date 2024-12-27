@@ -4,11 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Impression.Views"
-		xmlns:viewModel="clr-namespace:Impression.ViewModels" xmlns:customcontrols="clr-namespace:Impression.CustomControls"
+		xmlns:viewModel="clr-namespace:Impression.ViewModels"
+		xmlns:controls="clr-namespace:Impression.Controls"
 		mc:Ignorable="d"
         Title="EmotionEntryView" Height="550" Width="800"
 		WindowStyle="None"
-		ResizeMode="NoResize"
 		WindowStartupLocation="CenterScreen"
 		Background="Transparent"
 		AllowsTransparency="True">
@@ -26,17 +26,10 @@
 	</Window.Visibility>
 	
 	<Border CornerRadius="12"
-			Background="#f7eac7"
-			Opacity="0.85"
-			BorderThickness="2">
-		<Border.BorderBrush>
-			<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-				<GradientStop Color="#a1672d" Offset="0.3"/>
-				<GradientStop Color="#a1672d" Offset="0.4"/>
-				<GradientStop Color="#a1672d" Offset="0.5"/>
-			</LinearGradientBrush>
-		</Border.BorderBrush>
-		
+			Background="{StaticResource BackgroundGradient}"
+			BorderThickness="2"
+			BorderBrush="{StaticResource ColorBrush3}">
+			
 		<Grid>
 			<DockPanel x:Name="frm_topbar"
 					   Grid.Row="3"
@@ -57,27 +50,28 @@
 					<Border Grid.Column="0"
 							CornerRadius="8"
 							Height="25" Width="150"
-							Background="#a1672d"
+							Background="{StaticResource ColorBrush3}"
 							HorizontalAlignment="Left">
 						<TextBlock Text="Impression"
 								   x:Name="window_title"
 								   Grid.Column="0"
-								   Foreground="#f7eac7"
+								   Foreground="{StaticResource ColorBrush1}"
 								   FontSize="16"
 								   FontWeight="Bold"
-								   FontFamily="Montserrat"
+								   FontFamily="{StaticResource FontFamily1}"
 								   VerticalAlignment="Center"
 								   Padding="12 0"/>
 					</Border>
 
 					<TextBlock Grid.Column="1"
-						   MouseDown="topbar_MouseDown"/>
+							   MouseEnter="topbar_MouseEnter"
+							   MouseLeftButtonDown="topbar_MouseLeftButtonDown"/>
 
 					<Button x:Name="btn_minimize"
 							Content="-"
 							BorderThickness="0"
 							FontSize="16"
-							FontFamily="Montserrat"
+							FontFamily="{StaticResource FontFamily1}"
 							FontWeight="Bold"
 							Cursor="Hand"
 							Grid.Column="2"
@@ -85,11 +79,11 @@
 						<Button.Style>
 							<Style TargetType="Button">
 								<Setter Property="Background" Value="Transparent"/>
-								<Setter Property="Foreground" Value="#a1672d"/>
+								<Setter Property="Foreground" Value="{StaticResource ColorBrush3}"/>
 								<Style.Triggers>
 									<Trigger Property="IsMouseOver" Value="True">
-										<Setter Property="Background" Value="#a1672d"/>
-										<Setter Property="Foreground" Value="#f7eac7"/>
+										<Setter Property="Background" Value="{StaticResource ColorBrush3}"/>
+										<Setter Property="Foreground" Value="{StaticResource ColorBrush1}"/>
 									</Trigger>
 								</Style.Triggers>
 							</Style>
@@ -112,7 +106,7 @@
 							Content="x"
 							BorderThickness="0"
 							FontSize="16"
-							FontFamily="Montserrat"
+							FontFamily="{StaticResource FontFamily1}"
 							FontWeight="Bold"
 							Cursor="Hand"
 							Grid.Column="4"
@@ -120,11 +114,11 @@
 						<Button.Style>
 							<Style TargetType="Button">
 								<Setter Property="Background" Value="Transparent"/>
-								<Setter Property="Foreground" Value="#a1672d"/>
+								<Setter Property="Foreground" Value="{StaticResource ColorBrush3}"/>
 								<Style.Triggers>
 									<Trigger Property="IsMouseOver" Value="True">
-										<Setter Property="Background" Value="#a1672d"/>
-										<Setter Property="Foreground" Value="#f7eac7"/>
+										<Setter Property="Background" Value="{StaticResource ColorBrush3}"/>
+										<Setter Property="Foreground" Value="{StaticResource ColorBrush1}"/>
 									</Trigger>
 								</Style.Triggers>
 							</Style>
@@ -149,17 +143,17 @@
 						Orientation="Vertical"
 						Margin="25 60 25 35">
 				<TextBlock Text="How's it going?"
-						   Foreground="Black"
+						   Foreground="{StaticResource ColorBrush4}"
 						   FontSize="30"
 						   FontWeight="Bold"
-						   FontFamily="Montserrat"
+						   FontFamily="{StaticResource FontFamily1}"
 						   HorizontalAlignment="Center"
 						   Margin="0 0 0 5"/>
 				<TextBlock Text="Friday, December 13, 9:20 AM"
-						   Foreground="#a1672d"
+						   Foreground="{StaticResource ColorBrush2}"
 						   FontSize="15"
 						   FontWeight="SemiBold"
-						   FontFamily="Montserrat"
+						   FontFamily="{StaticResource FontFamily1}"
 						   HorizontalAlignment="Center"
 						   Margin="0 0 0 25"/>
 
@@ -168,14 +162,14 @@
 						   Foreground="Black"
 						   FontSize="20"
 						   FontWeight="SemiBold"
-						   FontFamily="Montserrat"
+						   FontFamily="{StaticResource FontFamily1}"
 						   Padding="12 8 12 8"
 						   Margin="0 0 0 5"/>
 
 				<TextBox x:Name="txtUser"
 						 Text="{Binding Username}"/>
 
-				<customcontrols:BindablePasswordBox Password="{Binding Password}"/>
+				<controls:BindablePasswordBox Password="{Binding Password}"/>
 
 
 			</StackPanel>

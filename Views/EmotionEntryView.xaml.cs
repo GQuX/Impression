@@ -13,6 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
+
 
 namespace Impression.Views
 {
@@ -24,11 +27,20 @@ namespace Impression.Views
 
 		public EmotionEntryView() {
             InitializeComponent();
+			this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
         }
 
-		private void topbar_MouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.LeftButton == MouseButtonState.Pressed) { DragMove(); }
+		[DllImport("user32.dll")]
+		public static extern IntPtr SendMessage(IntPtr window, int message, int w_param, int l_param);
+
+		private void topbar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+			WindowInteropHelper helper = new WindowInteropHelper(this);
+			SendMessage(helper.Handle, 161, 2, 0);
         }
+
+		private void topbar_MouseEnter(object sender, MouseEventArgs e) {
+			this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
+		}
 
 		private void btn_minimize_Click(object sender, RoutedEventArgs e) {
             WindowState = WindowState.Minimized;
@@ -40,5 +52,7 @@ namespace Impression.Views
 		private void btn_close_Click(object sender, RoutedEventArgs e) {
             Application.Current.Shutdown();
 		}
+
+		
 	}
 }

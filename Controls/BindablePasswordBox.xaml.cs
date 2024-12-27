@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Impression.CustomControls
+namespace Impression.Controls
 {
     /// <summary>
     /// Interaction logic for BindablePasswordBox.xaml
