@@ -7,11 +7,14 @@ namespace Impression.Models {
 			DataSource = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\LocalData.db")
 		}.ConnectionString;
 		
+		// Test Database connection
 		public void PrintAllTableNames() {
 			Trace.WriteLine("Database.PrintAllTableNames()");
 			using (var connection = new SQLiteConnection(connection_string)) {
 				connection.Open();
+
 				var command = new SQLiteCommand("SELECT name FROM sqlite_master WHERE type='table';", connection);
+
 				using (var reader = command.ExecuteReader()) {
 					Trace.WriteLine("Tables in database:");
 					while (reader.Read()) {
@@ -21,11 +24,12 @@ namespace Impression.Models {
 			}
 		}
 
-		// Get the color of an Emotion. (recursive)
+		// Get the color of an Emotion (recursive)
 		private static string GetEmotionColor(SQLiteConnection connection, int? emotion_id) {
 			if (emotion_id == null) { return "#E6E6FA"; }
 			
 			var command = new SQLiteCommand($"SELECT color, parent_id FROM emotions WHERE id = {emotion_id}", connection);
+
 			using (var reader = command.ExecuteReader()) {
 				if (reader.Read()) {
 					var color = reader.IsDBNull(0) ? null : reader.GetString(0);
@@ -49,7 +53,46 @@ namespace Impression.Models {
 
 			using (var connection = new SQLiteConnection(connection_string)) {
 				connection.Open();
+
 				var command = new SQLiteCommand("SELECT * FROM emotions", connection);
+
+				using (var reader = command.ExecuteReader()) {
+					while (reader.Read()) {
+						var emotion = new Emotion {
+							Id = reader.GetInt16(0),
+							Name = reader.GetString(1),
+							Level = reader.GetInt16(2),
+							Color = reader.IsDBNull(3) ? null : reader.GetString(3),
+							ParentId = reader.IsDBNull(4) ? (int?)null : reader.GetInt16(4),
+						};
+
+						if (string.IsNullOrEmpty(emotion.Color)) {
+							emotion.Color = GetEmotionColor(connection, emotion.ParentId);
+						}
+
+						emotions.Add(emotion);
+					}
+				}
+			}
+
+			return emotions;
+		}
+
+		// Get a list of all Emotions under another
+		public List<Emotion> GetChildEmotions(int? emotion_id) {
+			Trace.WriteLine("Database.GetChildEmotions("+ emotion_id.ToString() + ")");
+			var emotions = new List<Emotion>();
+
+			using (var connection = new SQLiteConnection(connection_string)) {
+				connection.Open();
+
+				var query = emotion_id.HasValue ?
+					"SELECT * FROM emotions WHERE parent_id = @emotion_id" :
+					"SELECT * FROM emotions WHERE parent_id IS NULL";
+
+				var command = new SQLiteCommand(query, connection);
+				command.Parameters.AddWithValue("@emotion_id", emotion_id);
+
 				using (var reader = command.ExecuteReader()) {
 					while (reader.Read()) {
 						var emotion = new Emotion {
@@ -78,7 +121,9 @@ namespace Impression.Models {
 
 			using (var connection = new SQLiteConnection(connection_string)) {
 				connection.Open();
+
 				var command = new SQLiteCommand("SELECT * FROM entries", connection);
+
 				using (var reader = command.ExecuteReader()) {
 					while (reader.Read()) {
 						entires.Add(new Entry {
@@ -97,11 +142,13 @@ namespace Impression.Models {
 		public void AddEntry(Entry entry) {
 			using (var connection = new SQLiteConnection(connection_string)) {
 				connection.Open();
+
 				var command = new SQLiteCommand("INSERT INTO entries (id, emotion_id, timestamp)" +
 					"VALUES (@Id, @EmotionId, @Timestamp)", connection);
 				command.Parameters.AddWithValue("@Id", entry.Id);
 				command.Parameters.AddWithValue("@EmotionId", entry.EmotionId);
 				command.Parameters.AddWithValue("@Timestamp", entry.Timestamp);
+
 				command.ExecuteNonQuery();
 			}
 		}

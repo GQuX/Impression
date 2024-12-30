@@ -24,12 +24,12 @@
 	<Window.Visibility>
 		<Binding Path="IsViewVisiable" Mode="TwoWay" Converter="{StaticResource BooleanToVisibility}"/>
 	</Window.Visibility>
-	
+
 	<Border CornerRadius="12"
 			Background="{StaticResource BackgroundGradient}"
 			BorderThickness="2"
 			BorderBrush="{StaticResource ColorBrush3}">
-			
+
 		<Grid>
 			<DockPanel x:Name="frm_topbar"
 					   Grid.Row="3"
@@ -157,23 +157,11 @@
 						   HorizontalAlignment="Center"
 						   Margin="0 0 0 25"/>
 
-				<TextBlock Text="Happy"
-						   Background="Yellow"
-						   Foreground="Black"
-						   FontSize="20"
-						   FontWeight="SemiBold"
-						   FontFamily="{StaticResource FontFamily1}"
-						   Padding="12 8 12 8"
-						   Margin="0 0 0 5"/>
-
-				<TextBox x:Name="txtUser"
-						 Text="{Binding Username}"/>
-
-				<controls:BindablePasswordBox Password="{Binding Password}"/>
-
-
+				<StackPanel x:Name="EmotionStack"
+							Orientation="Vertical">
+					<!-- Load Emotion Buttons here -->
+				</StackPanel>
 			</StackPanel>
-
 		</Grid>
 	</Border>
 </Window>
