@@ -3,27 +3,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Impression.Views"
-		xmlns:viewModel="clr-namespace:Impression.ViewModels"
-		xmlns:controls="clr-namespace:Impression.Controls"
+		xmlns:local="clr-namespace:Impression.Views"
+		xmlns:ViewModel="clr-namespace:Impression.ViewModels"
+		xmlns:Controls="clr-namespace:Impression.Controls"
 		mc:Ignorable="d"
         Title="EmotionEntryView" Height="550" Width="800"
 		WindowStyle="None"
 		WindowStartupLocation="CenterScreen"
 		Background="Transparent"
-		AllowsTransparency="True">
+		AllowsTransparency="True"
+		Loaded="Window_Loaded">
 
 	<Window.DataContext>
-		<viewModel:LoginViewModel/>
+		<ViewModel:EmotionEntry/>
 	</Window.DataContext>
 
 	<Window.Resources>
 		<BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
 	</Window.Resources>
-
-	<Window.Visibility>
-		<Binding Path="IsViewVisiable" Mode="TwoWay" Converter="{StaticResource BooleanToVisibility}"/>
-	</Window.Visibility>
 
 	<Border CornerRadius="12"
 			Background="{StaticResource BackgroundGradient}"
@@ -149,7 +146,8 @@
 						   FontFamily="{StaticResource FontFamily1}"
 						   HorizontalAlignment="Center"
 						   Margin="0 0 0 5"/>
-				<TextBlock Text="Friday, December 13, 9:20 AM"
+				<TextBlock x:Name="DateTime"
+						   Text="Friday"
 						   Foreground="{StaticResource ColorBrush2}"
 						   FontSize="15"
 						   FontWeight="SemiBold"
@@ -157,10 +155,18 @@
 						   HorizontalAlignment="Center"
 						   Margin="0 0 0 25"/>
 
-				<StackPanel x:Name="EmotionStack"
-							Orientation="Vertical">
-					<!-- Load Emotion Buttons here -->
-				</StackPanel>
+				<ItemsControl ItemsSource="{Binding Emotions}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Controls:EmotionButton/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+				<Button Content="Go Back"
+						Command="{Binding GoBackCommand}"
+						Visibility="{Binding CanGoBack, Converter={StaticResource BooleanToVisibility}}"/>
+
 			</StackPanel>
 		</Grid>
 	</Border>
