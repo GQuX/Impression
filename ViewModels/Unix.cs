@@ -1,23 +1,23 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
+using System.ComponentModel;
 
 namespace Impression.ViewModels {
 	public class Unix : ViewModelBase {
-		private long unix_timestamp;
-		private string formatted_date;
+		private long _unix_timestamp;
+		private string _formatted_date;
 
 		public long UnixDate {
-			get => unix_timestamp;
+			get => _unix_timestamp;
 			set {
-				unix_timestamp = value;
+				_unix_timestamp = value;
 				OnPropertyChanged();
 			}
 		}
 
 		public string FormattedDate {
-			get => formatted_date;
+			get => _formatted_date;
 			set {
-				formatted_date = value;
+				_formatted_date = value;
 				OnPropertyChanged();
 			}
 		}
@@ -34,8 +34,8 @@ namespace Impression.ViewModels {
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		protected void OnPropertyChanged([CallerMemberName] string property_name = null) {
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property_name));
 		}
 	}
 }

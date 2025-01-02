@@ -1,28 +1,36 @@
-﻿using System.Windows.Input;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
-
-using Impression.Models;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 using System.Diagnostics;
 
+using Impression.Models;
+using System.Runtime.CompilerServices;
+
 namespace Impression.ViewModels {
-    public class EmotionEntry : ViewModelBase {
+    public class EmotionEntryViewModel : ViewModelBase {
         private readonly Database _database = new();
-        private Stack<int?> _parent_emotion_ids_stack;
 
-        public ObservableCollection<Emotion> Emotions { get; set; } = [];
+		private Stack<int?> _parent_emotion_ids_stack;
+		public ObservableCollection<Emotion> Emotions { get; set; } = [];
 
-		public EmotionEntry() {
+		private readonly Unix _unix_view_model;
+		public Unix UnixViewModel => _unix_view_model;
+
+		public EmotionEntryViewModel() {
             _parent_emotion_ids_stack = new Stack<int?>();
             LoadEmotionsCommand = new RelayCommand<int?>(LoadEmotions);
             GoBackCommand = new RelayCommand(GoBack);
+            _unix_view_model = new Unix();
         }
 
 		private void SelectEmotion(int? emotion_id) {
 			if (!emotion_id.HasValue) return;
             // Handle selected emotion logic
             Trace.WriteLine(emotion_id + " Selected.");
+
+            var new_entry = new Entry();
+			new_entry.EmotionId = emotion_id.Value;
+			new_entry.Timestamp = _unix_view_model.UnixDate;
+            _database.AddEntry(new_entry);
 		}
 
 		public ICommand LoadEmotionsCommand { get; }
@@ -55,7 +63,7 @@ namespace Impression.ViewModels {
         private bool _can_go_back;
         public bool CanGoBack {
             get => _can_go_back;
-            set  {
+            set {
                 _can_go_back = value;
                 OnPropertyChanged(nameof(CanGoBack));
             }

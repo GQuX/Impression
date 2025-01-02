@@ -2,8 +2,7 @@
 using System.Windows.Input;
 
 namespace Impression.ViewModels {
-	public class RelayCommand<T> : ICommand
-	{
+	public class RelayCommand<T> : ICommand {
 		private readonly Action<T> _execute;
 		private readonly Func<T, bool> _canExecute;
 
@@ -30,8 +29,7 @@ namespace Impression.ViewModels {
 		}
 	}
 
-	public class RelayCommand : ICommand
-	{
+	public class RelayCommand : ICommand {
 		private readonly Action _execute;
 		private readonly Func<bool> _canExecute;
 

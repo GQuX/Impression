@@ -15,7 +15,7 @@
 		Loaded="Window_Loaded">
 
 	<Window.DataContext>
-		<ViewModel:EmotionEntry/>
+		<ViewModel:EmotionEntryViewModel/>
 	</Window.DataContext>
 
 	<Window.Resources>
@@ -147,7 +147,7 @@
 						   HorizontalAlignment="Center"
 						   Margin="0 0 0 5"/>
 				<TextBlock x:Name="DateTime"
-						   Text="Friday"
+						   Text="{Binding UnixViewModel.FormattedDate}"
 						   Foreground="{StaticResource ColorBrush2}"
 						   FontSize="15"
 						   FontWeight="SemiBold"
