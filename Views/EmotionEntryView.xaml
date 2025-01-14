@@ -1,173 +1,68 @@
-﻿<Window x:Class="Impression.Views.EmotionEntryView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:local="clr-namespace:Impression.Views"
-		xmlns:ViewModel="clr-namespace:Impression.ViewModels"
-		xmlns:Controls="clr-namespace:Impression.Controls"
-		mc:Ignorable="d"
-        Title="EmotionEntryView" Height="550" Width="800"
-		WindowStyle="None"
-		WindowStartupLocation="CenterScreen"
-		Background="Transparent"
-		AllowsTransparency="True"
-		Loaded="Window_Loaded">
+﻿<UserControl x:Class="Impression.Views.EmotionEntryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Impression.Views"
+             xmlns:ViewModel="clr-namespace:Impression.ViewModels"
+             xmlns:Controls="clr-namespace:Impression.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="550" d:DesignWidth="800"
+			 Loaded="EmotionEntryView_Loaded">
 
-	<Window.DataContext>
+	<UserControl.DataContext>
 		<ViewModel:EmotionEntryViewModel/>
-	</Window.DataContext>
+	</UserControl.DataContext>
 
-	<Window.Resources>
+	<UserControl.Resources>
 		<BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
-	</Window.Resources>
+	</UserControl.Resources>
 
-	<Border CornerRadius="12"
-			Background="{StaticResource BackgroundGradient}"
-			BorderThickness="2"
-			BorderBrush="{StaticResource ColorBrush3}">
+	<Grid>
+		<StackPanel Grid.Row="1"
+                    Orientation="Vertical"
+                    Margin="25 60 25 35">
+			<TextBlock Text="How's it going?"
+                       Foreground="{StaticResource ColorBrush4}"
+					   FontSize="30"
+					   FontWeight="Bold"
+					   FontFamily="{StaticResource FontFamily1}"
+					   HorizontalAlignment="Center"
+					   Margin="0 0 0 5"/>
+			<TextBlock x:Name="DateTime"
+					   Text="{Binding UnixViewModel.FormattedDate}"
+					   Foreground="{StaticResource ColorBrush2}"
+					   FontSize="15"
+					   FontWeight="SemiBold"
+					   FontFamily="{StaticResource FontFamily1}"
+					   HorizontalAlignment="Center"
+					   Margin="0 0 0 25"/>
 
-		<Grid>
-			<DockPanel x:Name="frm_topbar"
-					   Grid.Row="3"
-					   VerticalAlignment="Top"
-					   HorizontalAlignment="Stretch"
-					   Margin="8 8 8 0">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="150"/>
+			<ItemsControl ItemsSource="{Binding Emotions}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Controls:EmotionButton/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
 
-						<ColumnDefinition/>
-
-						<ColumnDefinition Width="25"/>
-						<ColumnDefinition Width="5"/>
-						<ColumnDefinition Width="25"/>
-					</Grid.ColumnDefinitions>
-
-					<Border Grid.Column="0"
-							CornerRadius="8"
-							Height="25" Width="150"
-							Background="{StaticResource ColorBrush3}"
-							HorizontalAlignment="Left">
-						<TextBlock Text="Impression"
-								   x:Name="window_title"
-								   Grid.Column="0"
-								   Foreground="{StaticResource ColorBrush1}"
-								   FontSize="16"
-								   FontWeight="Bold"
-								   FontFamily="{StaticResource FontFamily1}"
-								   VerticalAlignment="Center"
-								   Padding="12 0"/>
-					</Border>
-
-					<TextBlock Grid.Column="1"
-							   MouseEnter="topbar_MouseEnter"
-							   MouseLeftButtonDown="topbar_MouseLeftButtonDown"/>
-
-					<Button x:Name="btn_minimize"
-							Content="-"
-							BorderThickness="0"
-							FontSize="16"
-							FontFamily="{StaticResource FontFamily1}"
-							FontWeight="Bold"
-							Cursor="Hand"
-							Grid.Column="2"
-							Click="btn_minimize_Click">
-						<Button.Style>
-							<Style TargetType="Button">
-								<Setter Property="Background" Value="Transparent"/>
-								<Setter Property="Foreground" Value="{StaticResource ColorBrush3}"/>
-								<Style.Triggers>
-									<Trigger Property="IsMouseOver" Value="True">
-										<Setter Property="Background" Value="{StaticResource ColorBrush3}"/>
-										<Setter Property="Foreground" Value="{StaticResource ColorBrush1}"/>
-									</Trigger>
-								</Style.Triggers>
-							</Style>
-						</Button.Style>
-
-						<Button.Template>
-							<ControlTemplate TargetType="Button">
-								<Border Width="25" Height="25"
-										CornerRadius="8"
-										Background="{TemplateBinding Background}">
-									<ContentPresenter VerticalAlignment="Center"
-													  HorizontalAlignment="Center"/>
-								</Border>
-
-							</ControlTemplate>
-						</Button.Template>
-					</Button>
-
-					<Button x:Name="btn_close"
-							Content="x"
-							BorderThickness="0"
-							FontSize="16"
-							FontFamily="{StaticResource FontFamily1}"
-							FontWeight="Bold"
-							Cursor="Hand"
-							Grid.Column="4"
-							Click="btn_close_Click">
-						<Button.Style>
-							<Style TargetType="Button">
-								<Setter Property="Background" Value="Transparent"/>
-								<Setter Property="Foreground" Value="{StaticResource ColorBrush3}"/>
-								<Style.Triggers>
-									<Trigger Property="IsMouseOver" Value="True">
-										<Setter Property="Background" Value="{StaticResource ColorBrush3}"/>
-										<Setter Property="Foreground" Value="{StaticResource ColorBrush1}"/>
-									</Trigger>
-								</Style.Triggers>
-							</Style>
-						</Button.Style>
-
-						<Button.Template>
-							<ControlTemplate TargetType="Button">
-								<Border Width="25" Height="25"
-										CornerRadius="8"
-										Background="{TemplateBinding Background}">
-									<ContentPresenter VerticalAlignment="Center"
-													  HorizontalAlignment="Center"/>
-								</Border>
-
-							</ControlTemplate>
-						</Button.Template>
-					</Button>
-				</Grid>
-			</DockPanel>
-
-			<StackPanel Grid.Row="1"
-						Orientation="Vertical"
-						Margin="25 60 25 35">
-				<TextBlock Text="How's it going?"
-						   Foreground="{StaticResource ColorBrush4}"
-						   FontSize="30"
-						   FontWeight="Bold"
-						   FontFamily="{StaticResource FontFamily1}"
-						   HorizontalAlignment="Center"
-						   Margin="0 0 0 5"/>
-				<TextBlock x:Name="DateTime"
-						   Text="{Binding UnixViewModel.FormattedDate}"
-						   Foreground="{StaticResource ColorBrush2}"
-						   FontSize="15"
-						   FontWeight="SemiBold"
-						   FontFamily="{StaticResource FontFamily1}"
-						   HorizontalAlignment="Center"
-						   Margin="0 0 0 25"/>
-
-				<ItemsControl ItemsSource="{Binding Emotions}">
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<Controls:EmotionButton/>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-
+			<Border CornerRadius="6"
+					Background="{StaticResource ColorBrush5}"
+					Margin="0 6 50 0"
+					Width="200"
+					Height="24"
+					HorizontalAlignment="Right"
+					Visibility="{Binding CanGoBack, Converter={StaticResource BooleanToVisibility}}">
 				<Button Content="Go Back"
 						Command="{Binding GoBackCommand}"
-						Visibility="{Binding CanGoBack, Converter={StaticResource BooleanToVisibility}}"/>
-
-			</StackPanel>
-		</Grid>
-	</Border>
-</Window>
+						Background="Transparent"
+						Foreground="{StaticResource ColorBrush4}"
+						FontFamily="{StaticResource FontFamily1}"
+						FontWeight="DemiBold"
+						FontSize="16"
+						VerticalContentAlignment="Bottom"
+						BorderThickness="0"/>
+			</Border>
+		</StackPanel>
+	</Grid>
+</UserControl>

@@ -6,7 +6,7 @@ using Impression.Models;
 using System.Runtime.CompilerServices;
 
 namespace Impression.ViewModels {
-    public class EmotionEntryViewModel : ViewModelBase {
+    public class EmotionEntryViewModel : BaseViewModel {
         private readonly Database _database = new();
 
 		private Stack<int?> _parent_emotion_ids_stack;

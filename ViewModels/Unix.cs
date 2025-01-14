@@ -2,7 +2,7 @@
 using System.ComponentModel;
 
 namespace Impression.ViewModels {
-	public class Unix : ViewModelBase {
+	public class Unix : BaseViewModel {
 		private long _unix_timestamp;
 		private string _formatted_date;
 

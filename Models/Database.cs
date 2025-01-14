@@ -26,8 +26,9 @@ namespace Impression.Models {
 
 		// Get the color of an Emotion (recursive)
 		private static string GetEmotionColor(SQLiteConnection connection, int? emotion_id) {
+			Trace.WriteLine("Database.GetEmotionColor()");
 			if (emotion_id == null) { return "#E6E6FA"; }
-			
+						
 			var command = new SQLiteCommand($"SELECT color, parent_id FROM emotions WHERE id = {emotion_id}", connection);
 
 			using (var reader = command.ExecuteReader()) {
@@ -49,6 +50,7 @@ namespace Impression.Models {
 		// Get a list of all Emotions
 		public List<Emotion> GetEmotions() {
 			Trace.WriteLine("Database.GetEmotions()");
+			var color_cache = new Dictionary<int, string>();
 			var emotions = new List<Emotion>();
 
 			using (var connection = new SQLiteConnection(connection_string)) {
@@ -67,6 +69,11 @@ namespace Impression.Models {
 						};
 
 						if (string.IsNullOrEmpty(emotion.Color)) {
+							if (!color_cache.TryGetValue(emotion.ParentId.Value, out var color)) {
+								color = GetEmotionColor(connection, emotion.ParentId);
+								color_cache[emotion.ParentId.Value] = color;
+							}
+
 							emotion.Color = GetEmotionColor(connection, emotion.ParentId);
 						}
 
@@ -81,6 +88,7 @@ namespace Impression.Models {
 		// Get a list of all Emotions under another
 		public List<Emotion> GetChildEmotions(int? emotion_id) {
 			Trace.WriteLine("Database.GetChildEmotions("+ emotion_id.ToString() + ")");
+			var color_cache = new Dictionary<int, string>();
 			var emotions = new List<Emotion>();
 
 			using (var connection = new SQLiteConnection(connection_string)) {
@@ -104,7 +112,12 @@ namespace Impression.Models {
 						};
 
 						if (string.IsNullOrEmpty(emotion.Color)) {
-							emotion.Color = GetEmotionColor(connection, emotion.ParentId);
+							if (!color_cache.TryGetValue(emotion.ParentId.Value, out var color)) {
+								color = GetEmotionColor(connection, emotion.ParentId);
+								color_cache[emotion.ParentId.Value] = color;
+							}
+
+							emotion.Color = color;
 						}
 
 						emotions.Add(emotion);

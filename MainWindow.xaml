@@ -1,0 +1,136 @@
+﻿<Window x:Class="Impression.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:Impression.Views"
+		xmlns:ViewModel="clr-namespace:Impression.ViewModels"
+		xmlns:Control="clr-namespace:Impression.Controls"
+		xmlns:Command="clr-namespace:Impression.Commands"
+		mc:Ignorable="d"
+        Title="EmotionEntryView" Height="550" Width="800"
+		WindowStyle="None"
+		WindowStartupLocation="CenterScreen"
+		Background="Transparent"
+		AllowsTransparency="True">
+
+	<Border CornerRadius="12"
+			Background="{StaticResource BackgroundGradient}"
+			BorderThickness="2"
+			BorderBrush="{StaticResource ColorBrush3}">
+		<Grid>
+			<DockPanel x:Name="frm_topbar"
+					   VerticalAlignment="Top"
+					   HorizontalAlignment="Stretch"
+					   Margin="8 8 8 0">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="150"/>
+
+						<ColumnDefinition/>
+
+						<ColumnDefinition Width="25"/>
+						<ColumnDefinition Width="5"/>
+						<ColumnDefinition Width="25"/>
+					</Grid.ColumnDefinitions>
+
+					<Border Grid.Column="0"
+							CornerRadius="8"
+							Height="25" Width="150"
+							Background="{StaticResource ColorBrush3}"
+							HorizontalAlignment="Left">
+						<TextBlock Text="Impression"
+								   x:Name="window_title"
+								   Grid.Column="0"
+								   Foreground="{StaticResource ColorBrush1}"
+								   FontSize="16"
+								   FontWeight="Bold"
+								   FontFamily="{StaticResource FontFamily1}"
+								   VerticalAlignment="Center"
+								   Padding="12 0"/>
+					</Border>
+
+					<TextBlock Grid.Column="1"
+							   MouseEnter="topbar_MouseEnter"
+							   MouseLeftButtonDown="topbar_MouseLeftButtonDown"/>
+
+					<Button x:Name="btn_minimize"
+							Content="-"
+							BorderThickness="0"
+							FontSize="16"
+							FontFamily="{StaticResource FontFamily1}"
+							FontWeight="Bold"
+							Cursor="Hand"
+							Grid.Column="2"
+							Click="btn_minimize_Click">
+						<Button.Style>
+							<Style TargetType="Button">
+								<Setter Property="Background" Value="Transparent"/>
+								<Setter Property="Foreground" Value="{StaticResource ColorBrush3}"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource ColorBrush3}"/>
+										<Setter Property="Foreground" Value="{StaticResource ColorBrush1}"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</Button.Style>
+
+						<Button.Template>
+							<ControlTemplate TargetType="Button">
+								<Border Width="25" Height="25"
+										CornerRadius="8"
+										Background="{TemplateBinding Background}">
+									<ContentPresenter VerticalAlignment="Center"
+													  HorizontalAlignment="Center"/>
+								</Border>
+
+							</ControlTemplate>
+						</Button.Template>
+					</Button>
+
+					<Button x:Name="btn_close"
+							Content="x"
+							BorderThickness="0"
+							FontSize="16"
+							FontFamily="{StaticResource FontFamily1}"
+							FontWeight="Bold"
+							Cursor="Hand"
+							Grid.Column="4"
+							Click="btn_close_Click">
+						<Button.Style>
+							<Style TargetType="Button">
+								<Setter Property="Background" Value="Transparent"/>
+								<Setter Property="Foreground" Value="{StaticResource ColorBrush3}"/>
+								<Style.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{StaticResource ColorBrush3}"/>
+										<Setter Property="Foreground" Value="{StaticResource ColorBrush1}"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</Button.Style>
+
+						<Button.Template>
+							<ControlTemplate TargetType="Button">
+								<Border Width="25" Height="25"
+										CornerRadius="8"
+										Background="{TemplateBinding Background}">
+									<ContentPresenter VerticalAlignment="Center"
+													  HorizontalAlignment="Center"/>
+								</Border>
+
+							</ControlTemplate>
+						</Button.Template>
+					</Button>
+				</Grid>
+			</DockPanel>
+
+			<ContentControl Content="{Binding SelectedViewModel}"/>
+
+			<StackPanel Margin="12 64 12 0">
+				<Button Content="Test Button" Command="{Binding UpdateViewCommand}" CommandParameter="EmotionEntry"/>
+			</StackPanel>
+		</Grid>
+	</Border>
+</Window>

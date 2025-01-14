@@ -22,36 +22,15 @@ namespace Impression.Views {
 	/// <summary>
 	/// Interaction logic for EmotionEntryView.xaml
 	/// </summary>
-	public partial class EmotionEntryView : Window {
+	public partial class EmotionEntryView : UserControl {
 		public EmotionEntryView() {
 			InitializeComponent();
-			this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
 		}
 
-		private void Window_Loaded(object sender, RoutedEventArgs e) {
-			if (DataContext is EmotionEntryViewModel viewModel) { 
+		private void EmotionEntryView_Loaded(object sender, RoutedEventArgs e) {
+			if (DataContext is EmotionEntryViewModel viewModel) {
 				viewModel.LoadEmotionsCommand.Execute(null);
 			}
-		}
-
-		[DllImport("user32.dll")]
-		public static extern IntPtr SendMessage(IntPtr window, int message, int w_param, int l_param);
-
-		private void topbar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-			WindowInteropHelper helper = new WindowInteropHelper(this);
-			SendMessage(helper.Handle, 161, 2, 0);
-        }
-
-		private void topbar_MouseEnter(object sender, MouseEventArgs e) {
-			this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
-		}
-
-		private void btn_minimize_Click(object sender, RoutedEventArgs e) {
-			WindowState = WindowState.Minimized;
-		}
-
-		private void btn_close_Click(object sender, RoutedEventArgs e) {
-            Application.Current.Shutdown();
 		}
 	}
 }
