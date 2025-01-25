@@ -27,6 +27,9 @@ namespace Impression.Commands {
 					case "EmotionEntry":
 						viewModel.SelectedViewModel = new EmotionEntryViewModel();
 						break;
+					case "Entries":
+						viewModel.SelectedViewModel = new EntriesViewModel();
+						break;
 					// Add cases for other views as needed
 					default:
 						break;

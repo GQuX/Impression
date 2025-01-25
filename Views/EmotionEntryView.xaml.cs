@@ -28,8 +28,8 @@ namespace Impression.Views {
 		}
 
 		private void EmotionEntryView_Loaded(object sender, RoutedEventArgs e) {
-			if (DataContext is EmotionEntryViewModel viewModel) {
-				viewModel.LoadEmotionsCommand.Execute(null);
+			if (DataContext is EmotionEntryViewModel ViewModel) {
+				ViewModel.LoadEmotionsCommand.Execute(null);
 			}
 		}
 	}

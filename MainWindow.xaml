@@ -129,7 +129,7 @@
 			<ContentControl Content="{Binding SelectedViewModel}"/>
 
 			<StackPanel Margin="12 64 12 0">
-				<Button Content="Test Button" Command="{Binding UpdateViewCommand}" CommandParameter="EmotionEntry"/>
+				<Button Content="Test Button" Command="{Binding UpdateViewCommand}" CommandParameter="Entries"/>
 			</StackPanel>
 		</Grid>
 	</Border>
