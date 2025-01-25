@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Diagnostics;
+using System.Windows;
 
 using Impression.Models;
 using System.Runtime.CompilerServices;
@@ -31,6 +32,8 @@ namespace Impression.ViewModels {
 			new_entry.EmotionId = emotion_id.Value;
 			new_entry.Timestamp = _unix_view_model.UnixDate;
             _database.AddEntry(new_entry);
+
+			((MainViewModel)Application.Current.MainWindow.DataContext).UpdateViewCommand.Execute("Entries");
 		}
 
 		public ICommand LoadEmotionsCommand { get; }

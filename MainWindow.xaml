@@ -128,8 +128,12 @@
 
 			<ContentControl Content="{Binding SelectedViewModel}"/>
 
-			<StackPanel Margin="12 64 12 0">
-				<Button Content="Test Button" Command="{Binding UpdateViewCommand}" CommandParameter="Entries"/>
+			<StackPanel Margin="12 64 12 12"
+						VerticalAlignment="Bottom">
+				<Button Content="Entries" 
+						Command="{Binding UpdateViewCommand}" 
+						CommandParameter="Entries"
+						Margin="650 0 0 0"/>
 			</StackPanel>
 		</Grid>
 	</Border>

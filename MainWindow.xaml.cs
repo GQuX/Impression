@@ -16,6 +16,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Interop;
 
 using Impression.ViewModels;
+using Impression.Commands;
 
 namespace Impression
 {
@@ -27,6 +28,8 @@ namespace Impression
 			InitializeComponent();
             DataContext = new MainViewModel();
 			this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
+
+			((MainViewModel)DataContext).UpdateViewCommand.Execute("EmotionEntry");
 		}
 
 		[DllImport("user32.dll")]
