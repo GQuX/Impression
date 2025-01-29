@@ -20,10 +20,10 @@
 
 	<Grid>
 		<StackPanel Grid.Row="1"
-                    Orientation="Vertical"
-                    Margin="25 60 25 35">
+					Orientation="Vertical"
+					Margin="25 60 25 0">
 			<TextBlock Text="Here's what your last 30 days looked like."
-                       Foreground="{StaticResource ColorBrush4}"
+					   Foreground="{StaticResource ColorBrush4}"
 					   FontSize="30"
 					   FontWeight="Bold"
 					   FontFamily="{StaticResource FontFamily1}"
@@ -34,9 +34,107 @@
 					BorderThickness="3"
 					Background="{StaticResource ColorBrush1}"
 					BorderBrush="{StaticResource ColorBrush2}"
-					Height="300"
-					Padding="50">
+					Height="400"
+					Padding="5">
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="38"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+
+					<TextBlock Text="Sunday"
+							   Grid.Column="0"
+							   Grid.Row="0"
+							   Foreground="{StaticResource ColorBrush4}"
+							   FontSize="16"
+							   FontWeight="Bold"
+							   FontFamily="{StaticResource FontFamily1}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center"/>
+					<TextBlock Text="Monday"
+							   Grid.Column="1"
+							   Grid.Row="0"
+							   Foreground="{StaticResource ColorBrush4}"
+							   FontSize="16"
+							   FontWeight="Bold"
+							   FontFamily="{StaticResource FontFamily1}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center"/>
+					<TextBlock Text="Tuesday"
+							   Grid.Column="2"
+							   Grid.Row="0"
+							   Foreground="{StaticResource ColorBrush4}"
+							   FontSize="16"
+							   FontWeight="Bold"
+							   FontFamily="{StaticResource FontFamily1}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center"/>
+					<TextBlock Text="Wednesday"
+							   Grid.Column="3"
+							   Grid.Row="0"
+							   Foreground="{StaticResource ColorBrush4}"
+							   FontSize="16"
+							   FontWeight="Bold"
+							   FontFamily="{StaticResource FontFamily1}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center"/>
+					<TextBlock Text="Thursday"
+							   Grid.Column="4"
+							   Grid.Row="0"
+							   Foreground="{StaticResource ColorBrush4}"
+							   FontSize="16"
+							   FontWeight="Bold"
+							   FontFamily="{StaticResource FontFamily1}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center"/>
+					<TextBlock Text="Friday"
+							   Grid.Column="5"
+							   Grid.Row="0"
+							   Foreground="{StaticResource ColorBrush4}"
+							   FontSize="16"
+							   FontWeight="Bold"
+							   FontFamily="{StaticResource FontFamily1}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center"/>
+					<TextBlock Text="Saturday"
+							   Grid.Column="6"
+							   Grid.Row="0"
+							   Foreground="{StaticResource ColorBrush4}"
+							   FontSize="16"
+							   FontWeight="Bold"
+							   FontFamily="{StaticResource FontFamily1}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center"/>
+
+
+				</Grid>
 			</Border>
+		</StackPanel>
+
+		<StackPanel Margin="12 64 12 12"
+			VerticalAlignment="Bottom">
+			<Button Content="Export Data"
+			Background="{StaticResource ColorBrush2}"
+			FontFamily="{StaticResource FontFamily1}"
+			FontWeight="Bold"
+			FontSize="14"
+			Foreground="{StaticResource ColorBrush1}"
+			Margin="650 0 0 0"/>
 		</StackPanel>
 	</Grid>
 </UserControl>

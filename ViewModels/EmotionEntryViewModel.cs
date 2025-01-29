@@ -16,6 +16,8 @@ namespace Impression.ViewModels {
 		private readonly Unix _unix_view_model;
 		public Unix UnixViewModel => _unix_view_model;
 
+
+
 		public EmotionEntryViewModel() {
             _parent_emotion_ids_stack = new Stack<int?>();
             LoadEmotionsCommand = new RelayCommand<int?>(LoadEmotions);
