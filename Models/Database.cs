@@ -130,12 +130,38 @@ namespace Impression.Models {
 
 		// Get a list of all Entries
 		public List<Entry> GetEntries() {
+			Trace.WriteLine("Database.GetEntries()");
 			var entires = new List<Entry>();
 
 			using (var connection = new SQLiteConnection(connection_string)) {
 				connection.Open();
 
 				var command = new SQLiteCommand("SELECT * FROM entries", connection);
+
+				using (var reader = command.ExecuteReader()) {
+					while (reader.Read()) {
+						entires.Add(new Entry {
+							Id = Convert.ToInt16( reader.GetInt64(0) ),
+							EmotionId = Convert.ToInt16( reader.GetInt64(1) ),
+							Timestamp = Convert.ToInt32( reader.GetInt64(2) )
+						});
+					}
+				}
+			}
+
+			return entires;
+		}
+
+		// Get a list of all Entries
+		public List<Entry> GetEntriesFromLast30Days(long current_time) {
+			Trace.WriteLine("Database.GetEntriesFromLast30Days(" + current_time.ToString() + ")");
+			long thirty_days_ago = current_time - (30 * 24 * 60 * 60);
+			var entires = new List<Entry>();
+
+			using (var connection = new SQLiteConnection(connection_string)) {
+				connection.Open();
+
+				var command = new SQLiteCommand($"SELECT * FROM entries WHERE timestamp >= {thirty_days_ago}", connection);
 
 				using (var reader = command.ExecuteReader()) {
 					while (reader.Read()) {

@@ -30,7 +30,7 @@
 					   HorizontalAlignment="Center"
 					   Margin="0 0 0 5"/>
 			<TextBlock x:Name="DateTime"
-					   Text="{Binding UnixViewModel.FormattedDate}"
+					   Text="{Binding CurrentDate.Formatted}"
 					   Foreground="{StaticResource ColorBrush2}"
 					   FontSize="15"
 					   FontWeight="SemiBold"

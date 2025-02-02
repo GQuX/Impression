@@ -6,7 +6,7 @@ namespace Impression.ViewModels {
 		private long _unix_timestamp;
 		private string _formatted_date;
 
-		public long UnixDate {
+		public long Timestamp {
 			get => _unix_timestamp;
 			set {
 				_unix_timestamp = value;
@@ -14,7 +14,7 @@ namespace Impression.ViewModels {
 			}
 		}
 
-		public string FormattedDate {
+		public string Formatted {
 			get => _formatted_date;
 			set {
 				_formatted_date = value;
@@ -23,13 +23,13 @@ namespace Impression.ViewModels {
 		}
 
 		public Unix() {
-			SetDate();
+			Set();
 		}
 
-		public void SetDate() {
-			UnixDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-			DateTime dateTime = DateTimeOffset.FromUnixTimeSeconds(UnixDate).ToLocalTime().DateTime;
-			FormattedDate = dateTime.ToString("dddd, MMMM dd, h:mm tt");
+		public void Set() {
+			Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+			DateTime dateTime = DateTimeOffset.FromUnixTimeSeconds(Timestamp).ToLocalTime().DateTime;
+			Formatted = dateTime.ToString("dddd, MMMM dd, h:mm tt");
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

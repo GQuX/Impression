@@ -4,25 +4,16 @@ using System.Diagnostics;
 using System.Windows;
 
 using Impression.Models;
-using System.Runtime.CompilerServices;
 
 namespace Impression.ViewModels {
-    public class EmotionEntryViewModel : BaseViewModel {
-        private readonly Database _database = new();
-
-		private Stack<int?> _parent_emotion_ids_stack;
+    public class EmotionEntryViewModel : MainViewModel {
+        private Stack<int?> _parent_emotion_ids_stack;
 		public ObservableCollection<Emotion> Emotions { get; set; } = [];
-
-		private readonly Unix _unix_view_model;
-		public Unix UnixViewModel => _unix_view_model;
-
-
 
 		public EmotionEntryViewModel() {
             _parent_emotion_ids_stack = new Stack<int?>();
             LoadEmotionsCommand = new RelayCommand<int?>(LoadEmotions);
             GoBackCommand = new RelayCommand(GoBack);
-            _unix_view_model = new Unix();
         }
 
 		private void SelectEmotion(int? emotion_id) {
@@ -32,8 +23,8 @@ namespace Impression.ViewModels {
 
             var new_entry = new Entry();
 			new_entry.EmotionId = emotion_id.Value;
-			new_entry.Timestamp = _unix_view_model.UnixDate;
-            _database.AddEntry(new_entry);
+			new_entry.Timestamp = CurrentDate.Timestamp;
+			Database.AddEntry(new_entry);
 
 			((MainViewModel)Application.Current.MainWindow.DataContext).UpdateViewCommand.Execute("Entries");
 		}
@@ -44,7 +35,7 @@ namespace Impression.ViewModels {
                 _parent_emotion_ids_stack.Push(emotion_id);
             }
 
-            var emotions = _database.GetChildEmotions(emotion_id);
+            var emotions = Database.GetChildEmotions(emotion_id);
             if (emotions == null || emotions.Count == 0)  {
                 SelectEmotion(emotion_id);
                 return;

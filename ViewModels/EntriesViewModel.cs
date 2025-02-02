@@ -3,15 +3,15 @@ using System.Windows.Input;
 using System.Diagnostics;
 
 using Impression.Models;
-using System.Runtime.CompilerServices;
 
 namespace Impression.ViewModels {
-    public class EntriesViewModel : BaseViewModel {
-        private readonly Unix _unix_view_model;
-		public Unix UnixViewModel => _unix_view_model;
+    public class EntriesViewModel : MainViewModel {
+        
+        public EntriesViewModel() {
+			Trace.WriteLine("EntriesViewModel created.");
+			Trace.WriteLine( CurrentDate.Timestamp );
+			Trace.WriteLine( Database.GetEntriesFromLast30Days(CurrentDate.Timestamp).Count );
+		}
 
-		public EntriesViewModel() {
-            _unix_view_model = new Unix();
-        }
 	}
 }
