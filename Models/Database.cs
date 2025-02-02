@@ -93,7 +93,8 @@ namespace Impression.Models {
 					FROM entries AS entry
 					JOIN emotions AS emotion
 						ON entry.emotion_id = emotion.id
-					WHERE entry.timestamp >= @thirty_days_ago";
+					WHERE entry.timestamp >= @thirty_days_ago
+					ORDER BY entry.timestamp ASC";
 
 				var command = new SQLiteCommand(query, connection);
 				command.Parameters.AddWithValue("@thirty_days_ago", thirty_days_ago);

@@ -129,12 +129,13 @@
 		<StackPanel Margin="12 64 12 12"
 			VerticalAlignment="Bottom">
 			<Button Content="Export Data"
-			Background="{StaticResource ColorBrush2}"
-			FontFamily="{StaticResource FontFamily1}"
-			FontWeight="Bold"
-			FontSize="14"
-			Foreground="{StaticResource ColorBrush1}"
-			Margin="650 0 0 0"/>
+					Command="{Binding ExportCommand}"
+					Background="{StaticResource ColorBrush2}"
+					FontFamily="{StaticResource FontFamily1}"
+					FontWeight="Bold"
+					FontSize="14"
+					Foreground="{StaticResource ColorBrush1}"
+					Margin="650 0 0 0"/>
 		</StackPanel>
 	</Grid>
 </UserControl>
