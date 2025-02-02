@@ -1,34 +1,25 @@
 ﻿using System.Data.SQLite;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Impression.Models {
     public class Database {
         private string connection_string = new SQLiteConnectionStringBuilder() {
 			DataSource = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\LocalData.db")
 		}.ConnectionString;
-		
-		// Test Database connection
-		public void PrintAllTableNames() {
-			Trace.WriteLine("Database.PrintAllTableNames()");
-			using (var connection = new SQLiteConnection(connection_string)) {
-				connection.Open();
 
-				var command = new SQLiteCommand("SELECT name FROM sqlite_master WHERE type='table';", connection);
-
-				using (var reader = command.ExecuteReader()) {
-					Trace.WriteLine("Tables in database:");
-					while (reader.Read()) {
-						Trace.WriteLine(reader.GetString(0));
-					}
-				}
-			}
-		}
+		// Cache of Emotion colors
+		private static Dictionary<int, string> color_cache = new();
 
 		// Get the color of an Emotion (recursive)
 		private static string GetEmotionColor(SQLiteConnection connection, int? emotion_id) {
-			Trace.WriteLine("Database.GetEmotionColor()");
 			if (emotion_id == null) { return "#E6E6FA"; }
-						
+			if (color_cache.TryGetValue(emotion_id.Value, out var cachedColor)) {
+				return cachedColor;
+			}
+
+			Trace.WriteLine("Database.GetEmotionColor(" + emotion_id.ToString() + ")");
+
 			var command = new SQLiteCommand($"SELECT color, parent_id FROM emotions WHERE id = {emotion_id}", connection);
 
 			using (var reader = command.ExecuteReader()) {
@@ -37,58 +28,21 @@ namespace Impression.Models {
 					var parent_id = reader.IsDBNull(1) ? (int?)null : reader.GetInt16(1);
 
 					if (!string.IsNullOrEmpty(color)) {
+						color_cache[emotion_id.Value] = color;
 						return color;
 					}
 
-					return GetEmotionColor(connection, parent_id);
+					var parent_color = GetEmotionColor(connection, parent_id);
+					return parent_color;
 				}
 			}
 
 			return "#E6E6FA";
 		}
 
-		// Get a list of all Emotions
-		public List<Emotion> GetEmotions() {
-			Trace.WriteLine("Database.GetEmotions()");
-			var color_cache = new Dictionary<int, string>();
-			var emotions = new List<Emotion>();
-
-			using (var connection = new SQLiteConnection(connection_string)) {
-				connection.Open();
-
-				var command = new SQLiteCommand("SELECT * FROM emotions", connection);
-
-				using (var reader = command.ExecuteReader()) {
-					while (reader.Read()) {
-						var emotion = new Emotion {
-							Id = reader.GetInt16(0),
-							Name = reader.GetString(1),
-							Level = reader.GetInt16(2),
-							Color = reader.IsDBNull(3) ? null : reader.GetString(3),
-							ParentId = reader.IsDBNull(4) ? (int?)null : reader.GetInt16(4),
-						};
-
-						if (string.IsNullOrEmpty(emotion.Color)) {
-							if (!color_cache.TryGetValue(emotion.ParentId.Value, out var color)) {
-								color = GetEmotionColor(connection, emotion.ParentId);
-								color_cache[emotion.ParentId.Value] = color;
-							}
-
-							emotion.Color = GetEmotionColor(connection, emotion.ParentId);
-						}
-
-						emotions.Add(emotion);
-					}
-				}
-			}
-
-			return emotions;
-		}
-
 		// Get a list of all Emotions under another
 		public List<Emotion> GetChildEmotions(int? emotion_id) {
 			Trace.WriteLine("Database.GetChildEmotions("+ emotion_id.ToString() + ")");
-			var color_cache = new Dictionary<int, string>();
 			var emotions = new List<Emotion>();
 
 			using (var connection = new SQLiteConnection(connection_string)) {
@@ -112,12 +66,9 @@ namespace Impression.Models {
 						};
 
 						if (string.IsNullOrEmpty(emotion.Color)) {
-							if (!color_cache.TryGetValue(emotion.ParentId.Value, out var color)) {
-								color = GetEmotionColor(connection, emotion.ParentId);
-								color_cache[emotion.ParentId.Value] = color;
-							}
-
-							emotion.Color = color;
+							emotion.Color = GetEmotionColor(connection, emotion.ParentId);
+						} else {
+							color_cache[emotion.Id] = emotion.Color;
 						}
 
 						emotions.Add(emotion);
@@ -129,52 +80,45 @@ namespace Impression.Models {
 		}
 
 		// Get a list of all Entries
-		public List<Entry> GetEntries() {
-			Trace.WriteLine("Database.GetEntries()");
-			var entires = new List<Entry>();
-
-			using (var connection = new SQLiteConnection(connection_string)) {
-				connection.Open();
-
-				var command = new SQLiteCommand("SELECT * FROM entries", connection);
-
-				using (var reader = command.ExecuteReader()) {
-					while (reader.Read()) {
-						entires.Add(new Entry {
-							Id = Convert.ToInt16( reader.GetInt64(0) ),
-							EmotionId = Convert.ToInt16( reader.GetInt64(1) ),
-							Timestamp = Convert.ToInt32( reader.GetInt64(2) )
-						});
-					}
-				}
-			}
-
-			return entires;
-		}
-
-		// Get a list of all Entries
 		public List<Entry> GetEntriesFromLast30Days(long current_time) {
 			Trace.WriteLine("Database.GetEntriesFromLast30Days(" + current_time.ToString() + ")");
 			long thirty_days_ago = current_time - (30 * 24 * 60 * 60);
-			var entires = new List<Entry>();
+			var entries = new List<Entry>();
 
 			using (var connection = new SQLiteConnection(connection_string)) {
 				connection.Open();
 
-				var command = new SQLiteCommand($"SELECT * FROM entries WHERE timestamp >= {thirty_days_ago}", connection);
+				var query = @"
+					SELECT entry.id, entry.timestamp, entry.emotion_id, emotion.name, emotion.color
+					FROM entries AS entry
+					JOIN emotions AS emotion
+						ON entry.emotion_id = emotion.id
+					WHERE entry.timestamp >= @thirty_days_ago";
+
+				var command = new SQLiteCommand(query, connection);
+				command.Parameters.AddWithValue("@thirty_days_ago", thirty_days_ago);
 
 				using (var reader = command.ExecuteReader()) {
 					while (reader.Read()) {
-						entires.Add(new Entry {
-							Id = Convert.ToInt16( reader.GetInt64(0) ),
-							EmotionId = Convert.ToInt16( reader.GetInt64(1) ),
-							Timestamp = Convert.ToInt32( reader.GetInt64(2) )
-						});
+						var entry = new Entry {
+							Id			= Convert.ToInt16(reader.GetInt64(0)),
+							Timestamp = Convert.ToInt32(reader.GetInt64(1)),
+							EmotionId	= Convert.ToInt16(reader.GetInt64(2)),
+							EmotionName	= reader.GetString(3),
+							EmotionColor = reader.IsDBNull(4) ? null : reader.GetString(4)
+						};
+
+						entry.DateTime = DateTimeOffset.FromUnixTimeSeconds(entry.Timestamp).DateTime;
+						if (string.IsNullOrEmpty(entry.EmotionColor)) {
+							entry.EmotionColor = GetEmotionColor(connection, entry.EmotionId);
+						}
+
+						entries.Add(entry);
 					}
 				}
 			}
 
-			return entires;
+			return entries;
 		}
 
 		// Insert an Entry

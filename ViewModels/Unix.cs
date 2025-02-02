@@ -3,39 +3,44 @@ using System.ComponentModel;
 
 namespace Impression.ViewModels {
 	public class Unix : BaseViewModel {
-		private long _unix_timestamp;
+		private long _timestamp;
+		private DateTime _date_time;
 		private string _formatted_date;
-
+		
 		public long Timestamp {
-			get => _unix_timestamp;
+			get => _timestamp;
 			set {
-				_unix_timestamp = value;
-				OnPropertyChanged();
+				_timestamp = value;
+				OnPropertyChanged("Timestamp");
 			}
 		}
-
+		public DateTime DateTime {
+			get => _date_time;
+			set {
+				_date_time = value;
+				OnPropertyChanged("DateTime");
+			}
+		}
 		public string Formatted {
 			get => _formatted_date;
 			set {
 				_formatted_date = value;
-				OnPropertyChanged();
+				OnPropertyChanged("Formatted");
 			}
 		}
 
-		public Unix() {
-			Set();
+
+
+		public string DayOfWeek() {
+			return _date_time.DayOfWeek.ToString();
 		}
 
-		public void Set() {
-			Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-			DateTime dateTime = DateTimeOffset.FromUnixTimeSeconds(Timestamp).ToLocalTime().DateTime;
-			Formatted = dateTime.ToString("dddd, MMMM dd, h:mm tt");
-		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
 
-		protected void OnPropertyChanged([CallerMemberName] string property_name = null) {
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property_name));
+		public Unix(long? timestamp = null) {
+			Timestamp = timestamp ?? DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+			DateTime = DateTimeOffset.FromUnixTimeSeconds(Timestamp).ToLocalTime().DateTime;
+			Formatted = DateTime.ToString("dddd, MMMM dd, h:mm tt");
 		}
 	}
 }
