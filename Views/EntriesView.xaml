@@ -120,14 +120,14 @@
 								  Grid.ColumnSpan="7">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
-								<Grid>
+								<Grid VerticalAlignment="Stretch">
 									<Grid.RowDefinitions>
-										<RowDefinition Height="*" />
-										<RowDefinition Height="*" />
-										<RowDefinition Height="*" />
-										<RowDefinition Height="*" />
-										<RowDefinition Height="*" />
-										<RowDefinition Height="*" />
+										<RowDefinition Height="Auto" MinHeight="50" />
+										<RowDefinition Height="Auto" MinHeight="50" />
+										<RowDefinition Height="Auto" MinHeight="50" />
+										<RowDefinition Height="Auto" MinHeight="50" />
+										<RowDefinition Height="Auto" MinHeight="50" />
+										<RowDefinition Height="Auto" MinHeight="50" />
 									</Grid.RowDefinitions>
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="*" />
@@ -151,13 +151,20 @@
 
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<TextBlock Text="{Binding Entry.EmotionName}"
-										   Foreground="{Binding Entry.EmotionColor}"
-										   FontSize="16"
-										   FontWeight="Bold"
-										   FontFamily="{StaticResource FontFamily1}"
-										   HorizontalAlignment="Center"
-										   VerticalAlignment="Center"/>
+								<Border Background="{Binding AverageColor}" 
+										CornerRadius="4"
+										BorderThickness="2"
+										BorderBrush="{Binding ContrastColor}"
+										VerticalAlignment="Stretch">
+									<TextBlock Text="{Binding Emotions}"
+											   Foreground="{Binding ContrastColor}"
+											   FontSize="12"
+											   FontWeight="Bold"
+											   FontFamily="{StaticResource FontFamily1}"
+											   HorizontalAlignment="Center"
+											   VerticalAlignment="Center"
+											   TextWrapping="Wrap"/>
+								</Border>
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>

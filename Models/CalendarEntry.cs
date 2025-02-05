@@ -8,8 +8,10 @@ using Impression.Models;
 
 namespace Impression.Models {
 	public class CalendarEntry {
-		public required Entry Entry { get; set; }
 		public int Row { get; set; }
 		public int Column { get; set; }
+		public required string AverageColor { get; set; }
+		public required string ContrastColor { get; set; }
+		public required string Emotions { get; set; }
 	}
 }
