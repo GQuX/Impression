@@ -14,10 +14,6 @@
 		<ViewModel:EntriesViewModel/>
 	</UserControl.DataContext>
 
-	<UserControl.Resources>
-		<BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
-	</UserControl.Resources>
-
 	<Grid>
 		<StackPanel Grid.Row="1"
 					Orientation="Vertical"
@@ -50,10 +46,6 @@
 
 					<Grid.RowDefinitions>
 						<RowDefinition Height="38"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
-						<RowDefinition Height="*"/>
 						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
 
@@ -121,11 +113,61 @@
 							   HorizontalAlignment="Center"
 							   VerticalAlignment="Center"/>
 
+					<!-- Emotion Entries -->
+					<ItemsControl ItemsSource="{Binding CalendarEntries}" 
+								  Grid.Row="1" 
+								  Grid.Column="0" 
+								  Grid.ColumnSpan="7">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="*" />
+										<RowDefinition Height="*" />
+										<RowDefinition Height="*" />
+										<RowDefinition Height="*" />
+										<RowDefinition Height="*" />
+										<RowDefinition Height="*" />
+									</Grid.RowDefinitions>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+								</Grid>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+
+						<ItemsControl.ItemContainerStyle>
+							<Style TargetType="ContentPresenter">
+								<Setter Property="Grid.Row" Value="{Binding Row}" />
+								<Setter Property="Grid.Column" Value="{Binding Column}" />
+							</Style>
+						</ItemsControl.ItemContainerStyle>
+
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Entry.EmotionName}"
+										   Foreground="{Binding Entry.EmotionColor}"
+										   FontSize="16"
+										   FontWeight="Bold"
+										   FontFamily="{StaticResource FontFamily1}"
+										   HorizontalAlignment="Center"
+										   VerticalAlignment="Center"/>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
 
 				</Grid>
 			</Border>
 		</StackPanel>
 
+		<!-- Export Button -->
 		<StackPanel Margin="12 64 12 12"
 			VerticalAlignment="Bottom">
 			<Button Content="Export Data"

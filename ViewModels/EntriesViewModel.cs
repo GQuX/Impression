@@ -8,8 +8,16 @@ using Impression.Models;
 
 namespace Impression.ViewModels {
     public class EntriesViewModel : MainViewModel {
-		private List<Entry> entries;
+		private ObservableCollection<CalendarEntry> _calendar_entries;
 		public ICommand ExportCommand { get; }
+
+		public ObservableCollection<CalendarEntry> CalendarEntries {
+			get { return _calendar_entries; }
+			set {
+				_calendar_entries = value;
+				OnPropertyChanged(nameof(CalendarEntries));
+			}
+		}
 
 		private void ExportEntries() {
 			try {
@@ -17,7 +25,7 @@ namespace Impression.ViewModels {
 				string file_path = Path.Combine(downloads_folder, "Entries.csv");
 
 				using (StreamWriter writer = new(file_path)) {
-					foreach (Entry entry in entries) {
+					foreach (Entry entry in CalendarEntries.Select(ce => ce.Entry)) {
 						string date = $"\"{entry.DateTime:yyyy.MM.dd}\"";
 						string time = $"\"{entry.DateTime:h:mm tt}\"";
 
@@ -31,15 +39,31 @@ namespace Impression.ViewModels {
 			}
 		}
 
+		int total_weeks = 5;
 		public EntriesViewModel() {
 			Trace.WriteLine("EntriesViewModel created.");
-			entries = Database.GetEntriesFromLast30Days(CurrentDate.Timestamp);
+			var entry_list = Database.GetEntriesFromLast30Days(CurrentDate.Timestamp);
+			_calendar_entries = new ObservableCollection<CalendarEntry>();
 
-			foreach (Entry entry in entries) {
-				Trace.WriteLine($"Day of Week: {entry.DateTime.DayOfWeek.ToString()}, Emotion: {entry.EmotionName}");
+			foreach (Entry entry in entry_list) {
+				int days = (CurrentDate.DateTime.Date - entry.DateTime.Date).Days;
+				int row = total_weeks - (days / 7);
+				int column = (((int)CurrentDate.DateTime.DayOfWeek - days) % 7 + 7) % 7;
+
+				Trace.WriteLine(entry.EmotionName);
+				Trace.WriteLine($"Row: {row}");
+				Trace.WriteLine($"Column: {column}");
+				Trace.WriteLine($"{entry.DateTime.DayOfWeek.ToString()}, {entry.DateTime:MM.dd}");
+
+				var calendar_entry = new CalendarEntry {
+					Entry	= entry,
+					Row		= row,
+					Column	= column
+				};
+				_calendar_entries.Add(calendar_entry);
+
 			}
 			ExportCommand = new RelayCommand(ExportEntries);
-
 		}
 	}
 }

@@ -82,7 +82,7 @@ namespace Impression.Models {
 		// Get a list of all Entries
 		public List<Entry> GetEntriesFromLast30Days(long current_time) {
 			Trace.WriteLine("Database.GetEntriesFromLast30Days(" + current_time.ToString() + ")");
-			long thirty_days_ago = current_time - (30 * 24 * 60 * 60);
+			long thirty_days_ago = current_time - (29 * 24 * 60 * 60);
 			var entries = new List<Entry>();
 
 			using (var connection = new SQLiteConnection(connection_string)) {
