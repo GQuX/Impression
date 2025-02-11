@@ -94,14 +94,20 @@ namespace Impression.ViewModels {
 				Trace.WriteLine(entry.EmotionName + days.ToString());
 			}
 
+			int current_day_column = (int)CurrentDate.DateTime.DayOfWeek;
+			
 			foreach (var kvp in _entries_by_day) {
-				Trace.WriteLine($"Day: {kvp.Key}");
 				string avg_color = AverageColor(kvp.Value);
 				string contrast_color = TextContrast(avg_color).ToString();
 				string stacked_emotions = string.Join("\n", kvp.Value.Select(e => e.EmotionName));
 
 				int row		= total_weeks - (kvp.Key / 7);
-				int column	= (((int)CurrentDate.DateTime.DayOfWeek - kvp.Key) % 7 + 7) % 7;
+				int column	= (current_day_column - (kvp.Key % 7) + 7) % 7;
+				if (column > current_day_column) row--;
+				row = Math.Max(0, row);
+
+				//Trace.WriteLine($"Day: {kvp.Key} | {row}, {column}");
+				//Trace.WriteLine(stacked_emotions);
 
 				var calendar_entry = new CalendarEntry {
 					Row		= row,

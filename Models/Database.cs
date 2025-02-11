@@ -82,7 +82,7 @@ namespace Impression.Models {
 		// Get a list of all Entries
 		public List<Entry> GetEntriesFromLast30Days(long current_time) {
 			Trace.WriteLine("Database.GetEntriesFromLast30Days(" + current_time.ToString() + ")");
-			long thirty_days_ago = current_time - (29 * 24 * 60 * 60);
+			long thirty_days_ago = current_time - (34 * 24 * 60 * 60);
 			var entries = new List<Entry>();
 
 			using (var connection = new SQLiteConnection(connection_string)) {
@@ -127,9 +127,8 @@ namespace Impression.Models {
 			using (var connection = new SQLiteConnection(connection_string)) {
 				connection.Open();
 
-				var command = new SQLiteCommand("INSERT INTO entries (id, emotion_id, timestamp)" +
-					"VALUES (@Id, @EmotionId, @Timestamp)", connection);
-				command.Parameters.AddWithValue("@Id", entry.Id);
+				var command = new SQLiteCommand("INSERT INTO entries (emotion_id, timestamp)" +
+					"VALUES (@EmotionId, @Timestamp)", connection);
 				command.Parameters.AddWithValue("@EmotionId", entry.EmotionId);
 				command.Parameters.AddWithValue("@Timestamp", entry.Timestamp);
 
